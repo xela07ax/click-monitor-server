@@ -13,7 +13,7 @@
 Скриншот ***click-monitor.exe***
 ![Скриншот click-monitor.exe](./docs/desctop_app.png)
 <img src="./docs/report_system.png" width="550" />
-Скриншот удаленного ws терминала ***rest-repiter.exe***
+Скриншот удаленного ws терминала ***rest-repiter.exe***  
 <img src="./docs/ws_logger-repiter.png" width="550" />
 
 Компиляция:
