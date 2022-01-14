@@ -34,3 +34,9 @@ chmod +x ./rest-repiter_v1.4
 ```sh
 ./rest-repiter_v1.4 1>log1stdout.txt 2>log1stderr.txt
 ```
+
+Замечания к выпуску:  
+- Пример запроса для rest-repiter
+```json
+{"service":"go.tracker.svc.repiter","endpoint":"","request":"{\"Time\":\"2022-01-15T00:24:13.5560993+03:00\",\"Send\":true,\"RedirectUrl\":\"https://ipqualityscore.com/api/json/ip/eiC6ecKq1IUW25Z8itwVHtcmUB7LJKx6/129.146.238.121\",\"Params\":\"allow_public_access_points=true\\u0026fast=false\\u0026lighter_penalties=true\\u0026mobile=false\\u0026strictness=1\\u0026user_agent=Mozilla/5.0%20(iPhone;%20CPU%20iPhone%20OS%2014_2%20like%20Mac%20OS%20X)%20AppleWebKit/605.1.15%20(KHTML,%20like%20Gecko)%20Version/14.0.1%20Mobile/15E148%20Safari/604.1\",\"Method\":\"GET\",\"Body\":\"\",\"Type\":\"\"}"}
+```
