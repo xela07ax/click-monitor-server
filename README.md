@@ -1,19 +1,24 @@
-# Autotest Tools
+## Click monitor Tools (server version and repiter)
 
-В этом репозитарии некоторые из модулей которые вошли в состав программного обеспечения Сивилла предназначенного для 
+1) Считывает сообщения из БД о новых кликах
+    - мониторинг таблицы на появление новых кликов
+2) Подготавливает URL для отправки в сторонний сервис
+    - подготавливает, но сам не отправляет, так как его IP не предназначен для таких запросов
+3) Отправляет на последующую отправку в ***rest-repiter*** который на стороннем сервере ждет rest сообщения 
+4) Сортирует полученный результат на ошибки, ок и найденные в кеше для мини Репортинга 
+    - отчет в реальном времени в папке report
+    - сохранение в OLTP базу для дальнейшей работы с данными
+5) Кеширует запросы по ключу IP + UserAgent
 
-Получить
+Скриншот ***click-monitor.exe***
+<img src="desctop_app.jpg" width="550" />
+<img src="report_system.jpg" width="550" />
+Скриншот удаленного ws терминала ***rest-repiter.exe***
+<img src="ws_logger-repiter.jpg" width="550" />
+
+Компиляция:
 ```sh
-curl -H "Content-Type: application/json" -X POST http://localhost:7456/sh -d "Hello World"
-```
-`
-{
-	"service": "go.tracker.svc.capproc",
-    "endpoint": "Capproc.GetCapsStates",
-    "request": {
-		"offerId": 90
-	}
-}
-`
 CGO_ENABLED=0 GOOS=windows go build -gcflags "all=-N -l" -o service.exe
 CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o service
+`
+

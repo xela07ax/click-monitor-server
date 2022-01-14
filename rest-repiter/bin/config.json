@@ -1,6 +1,6 @@
 {
   "HttpServerPort": 1313,
-  "service": "go.tracker.svc.frodv2",
+  "service": "go.tracker.svc.repiter",
   "timeout": 60,
   "path": {
     "log": "chLog",
