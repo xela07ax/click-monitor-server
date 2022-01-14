@@ -22,4 +22,10 @@
 ```sh
 CGO_ENABLED=0 GOOS=windows go build -gcflags "all=-N -l" -o service.exe
 CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o service
-`
+```
+Конфигурации лежат в папке bin 
+
+Запуск:  
+```sh
+./rest-repiter_v1.4 1>log1stdout.txt 2>log1stderr.txt
+```
