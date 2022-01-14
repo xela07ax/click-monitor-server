@@ -11,12 +11,12 @@
 5) Кеширует запросы по ключу IP + UserAgent
 
 Скриншот ***click-monitor.exe***
-![Скриншот click-monitor.exe](./docs/desctop_app.png)
-<img src="./docs/report_system.png" width="550" />
+![Скриншот click-monitor.exe](./docs/desctop_app.png)  
+<img src="./docs/report_system.png" width="550" />  
 Скриншот удаленного ws терминала ***rest-repiter.exe***  
-<img src="./docs/ws_logger-repiter.png" width="550" />
+<img src="./docs/ws_logger-repiter.png" width="550" />  
 
-Компиляция:
+Компиляция:  
 ```sh
 CGO_ENABLED=0 GOOS=windows go build -gcflags "all=-N -l" -o service.exe
 CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o service
