@@ -18,13 +18,18 @@
 Скриншот удаленного ws терминала ***rest-repiter.exe***  
 <img src="./docs/ws_logger-repiter.png" width="550" />  
 
+Конфигурации лежат в папке bin 
+
 Компиляция:  
 ```sh
 CGO_ENABLED=0 GOOS=windows go build -gcflags "all=-N -l" -o service.exe
 CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o service
 ```
-Конфигурации лежат в папке bin 
 
+Далее необходимо сделать его исполняемым:
+```sh
+chmod +x openvpn-install.sh
+```
 Запуск:  
 ```sh
 ./rest-repiter_v1.4 1>log1stdout.txt 2>log1stderr.txt
