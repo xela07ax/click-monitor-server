@@ -1,0 +1,9 @@
+{
+  "HttpServerPort": 1313,
+  "service": "go.tracker.svc.frodv2",
+  "timeout": 60,
+  "path": {
+    "log": "chLog",
+    "report": "report"
+  }
+}
