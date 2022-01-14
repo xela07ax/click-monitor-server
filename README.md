@@ -21,4 +21,3 @@
 CGO_ENABLED=0 GOOS=windows go build -gcflags "all=-N -l" -o service.exe
 CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o service
 `
-
