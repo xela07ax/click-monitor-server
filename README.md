@@ -28,7 +28,7 @@ CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o service
 
 Далее необходимо сделать его исполняемым:
 ```sh
-chmod +x openvpn-install.sh
+chmod +x ./rest-repiter_v1.4
 ```
 Запуск:  
 ```sh
