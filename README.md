@@ -11,10 +11,10 @@
 5) Кеширует запросы по ключу IP + UserAgent
 
 Скриншот ***click-monitor.exe***
-<img src="./docs/desctop_app.jpg" width="550" />
-<img src="./docs/report_system.jpg" width="550" />
+![Скриншот click-monitor.exe](./docs/desctop_app.png)
+<img src="./docs/report_system.png" width="550" />
 Скриншот удаленного ws терминала ***rest-repiter.exe***
-<img src="./docs/ws_logger-repiter.jpg" width="550" />
+<img src="./docs/ws_logger-repiter.png" width="550" />
 
 Компиляция:
 ```sh
