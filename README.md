@@ -1,5 +1,5 @@
 ## Click Monitor and Repiter Tools 
-#### server version and repiter
+#### Отправка запросов с удаленного сервера
 
 
 1) Считывает сообщения из БД о новых кликах
