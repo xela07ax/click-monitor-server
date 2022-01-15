@@ -34,6 +34,10 @@ chmod +x ./rest-repiter_v1.4
 ```sh
 ./rest-repiter_v1.4 1>log1stdout.txt 2>log1stderr.txt
 ```
+или если хотите оставить демона в системе
+```sh
+nohup ./rest-repiter_v1.4 &
+```
 
 Замечания к выпуску:  
 - Пример запроса для rest-repiter
