@@ -1,0 +1,7 @@
+{
+  "HttpServerPort": 1331,
+  "path": {
+    "log": "chLog",
+    "report": "report"
+  }
+}
