@@ -18,8 +18,10 @@ const configName = "config.json"
 
 func main() {
 	fmt.Printf("ಠ┗(▀̿Ĺ̯▀̿ ̿)┓ \n")
-	fmt.Printf("        Click monitor v1.13 +repiter module v1.4\n")
-	fmt.Printf("        	hotfix not match(user_agent, '^\\d')\n")
+	fmt.Printf("        Click monitor v1.15 +repiter module v1.4\n")
+	fmt.Printf("        	 v1.13 + [hotfix not match(user_agent, '^\\d')]\n")
+	fmt.Printf("        	 v1.14 + network_id != 43\n")
+	fmt.Printf("        	 v1.15 + (fix where datetime minus) g.Interval-1*time.Second\n")
 	fmt.Printf("      ٩◔̯◔۶\n")
 	// Подготовим конфиг
 	dir, err := tp.BinDir()

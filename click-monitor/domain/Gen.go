@@ -67,7 +67,7 @@ func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IP
 }
 func (g *GenFilter) calc() {
 	g.currentTimestamp = time.Now().Add(- time.Duration(g.cfg.ChDb.Timezone)*time.Hour)
-	g.minusIntervalTimestamp = g.currentTimestamp.Add(- g.Interval)
+	g.minusIntervalTimestamp = g.currentTimestamp.Add(- (g.Interval-1*time.Second))
 	g.filter = model.LogFilter{
 		TimestampFrom: g.minusIntervalTimestamp,
 		TimestampTo:   g.currentTimestamp,

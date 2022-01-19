@@ -124,7 +124,9 @@ func (f *LogFilter) GetSqlLimit() (limitSql string, err error) {
 
 func (f *LogFilter) GetSqlWhere() (where string) {
 	f.addWhereParams()
+	f.params = append(f.params, "network_id != 43") // Demo network
 	f.params = append(f.params, "not match(user_agent, '^\\d')")
+
 	if len(f.params) == 0 {
 		return
 	}
