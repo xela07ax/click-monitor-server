@@ -1,12 +1,14 @@
-# Autotest Tools
+# Balancer websocket clients
+### rest repiter input and redirecting to any client
 
 В этом репозитарии некоторые из модулей которые вошли в состав программного обеспечения Сивилла предназначенного для 
 
-
-
 Запросы:  
 - Подключен repiter, можно отправлять запросы аналогичные как для **rest-repiter**.
-- Список подключенных клиентов  
+- Отправка из очереди осуществляется рандомному клиенту из списка.
+- Отправка запросов определенному клиенту
+
+Список подключенных клиентов  
 ```(json)
 method: POST
 req_url: http://balancer-server-host.ru:1331/client/rpc
@@ -17,17 +19,7 @@ response: [
               "195.16.78.61"
           ]
 ``` 
-- Отправить URL на отправку клиентом
-```(json)
-method: POST
-req_url: http://balancer-server-host.ru:1331/client/rpc
-body: {"endpoint": "GetListClients",
-       "service": "go.tracker.svc.hubServices"}
-response: [
-              "193.126.51.168",
-              "195.16.78.61"
-          ]
-``` 
+
 
 Получить
 ```sh
