@@ -4,6 +4,13 @@
 Запросы:  
 - Подключен repiter, можно отправлять запросы аналогичные как для **rest-repiter**.
 - Отправка из очереди осуществляется рандомному клиенту из списка.
+```(json)
+{
+    "service": "go.tracker.svc.repiter",
+    "endpoint": "",
+    "request": "{\"Time\":\"2022-01-15T00:24:13.1951894+03:00\",\"Send\":true,\"RedirectUrl\":\"http://trackerhqu.com/15b1/602/39b/86a4937a-5dac-53a5-9f4f-5d137d5c030d\",\"Params\":\"allow_public_access_points=true\\u0026fast=false\\u0026lighter_penalties=true\\u0026mobile=false\\u0026strictness=1\",\"Method\":\"GET\",\"Body\":\"\",\"Type\":\"\"}"
+}
+```
 - Отправка запросов определенному клиенту
 - Список подключенных клиентов  
 ```(json)
