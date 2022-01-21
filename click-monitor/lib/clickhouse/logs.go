@@ -5,7 +5,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	_ "github.com/ClickHouse/clickhouse-go"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"time"
 )
 

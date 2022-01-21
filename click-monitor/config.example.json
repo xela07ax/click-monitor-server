@@ -5,7 +5,7 @@
   "ipqs_key": "************************",
   "sender": {
     "send": false,
-    "ip": "89.223.68.155",
+    "ip": "89.223.77.155",
     "host_repiter": "http://769245-ce60489.*****.ru:1313/rpc",
     "host_repiter_": "http://localhost:1313/rpc",
     "service": "go.tracker.svc.repiter"

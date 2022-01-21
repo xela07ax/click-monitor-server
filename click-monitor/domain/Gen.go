@@ -3,10 +3,10 @@ package domain
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/xela07ax/rest-repiter/lib/clickhouse"
-	"github.com/xela07ax/rest-repiter/lib/db"
-	"github.com/xela07ax/rest-repiter/lib/reporter"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/clickhouse"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/db"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/reporter"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"strings"
 	"time"
 )
@@ -41,7 +41,7 @@ func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IP
 	}
 	result.Timestamp = time.Now()
 	result.SenderIp = g.cfg.Sender.Ip
-
+	result.Uag = userAgent
 	heandler := model.Handle{
 		Time:        result.Timestamp,
 		Send:        g.cfg.Sender.Send,
@@ -57,7 +57,7 @@ func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IP
 		result.RespCode = respRpc.RespCode
 		result.RespBody = respRpc.RespBody
 	}
-	fmt.Printf("RpcRequest:%v\n", respRpc)
+	//fmt.Printf("RpcRequest:%v\n", respRpc)
 	//if resp.StatusCode != 200 {
 	//	err = fmt.Errorf("wrong response code: %d (%s)", resp.StatusCode, resp.Status)
 	//	return
@@ -92,27 +92,29 @@ func (g *GenFilter) circle() {
 	if len(rows) > 0 {
 		for _, v := range rows {
 			// проверить есть ли в кеше
-			keu := fmt.Sprintf("%s%s", v.Ip.String(), v.UserAgent.String)
-			rowIpqs := g.db.TableIPQS.Get(keu)
-			if rowIpqs.Id != 0 {
+			ipKey := v.Ip.String()
+			//keu := fmt.Sprintf("%s%s", ipKey, v.UserAgent.String)
+			rowIpqs := g.db.TableIpAddress.Get(ipKey)
+			if rowIpqs != nil {
 				rowIpqs.RefererId = rowIpqs.Id
-				g.db.Sequences.SetCashDetect(keu)
-				g.reporting.SetCashDetect(keu)
+				//g.db.Sequences.SetCashDetect(ipKey)
+				g.reporting.SetCashDetect(ipKey)
 			} else {
 				result, err := g.CallThirdParty(v.Ip.String(), v.UserAgent.String)
 				if err != nil {
-					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", keu), fmt.Sprintf("err:%v|resu:%v", err, result), "ERROR"}
-					g.reporting.SetErr(keu, fmt.Errorf("err:%v|body:%s", err, result.RespBody))
+					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", ipKey), fmt.Sprintf("err:%v|resu:%v", err, result), "ERROR"}
+					g.reporting.SetErr(ipKey, fmt.Errorf("err:%v|body:%s", err, result.RespBody))
 					continue
 				}
 				if isUpdateTariff(result.RespBody) {
-					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", keu), fmt.Sprintf("err:Please upgrade to increase your request quota.|resu:%v", result), "ERROR"}
-					g.reporting.SetErr(keu, fmt.Errorf("request not valid (success true not detect)|body:%s", result.RespBody))
+					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", ipKey), fmt.Sprintf("err: (обычно такое)Please upgrade to increase your request quota.|resu:%v", result), "ERROR"}
+					g.reporting.SetErr(ipKey, fmt.Errorf("request not valid (success true not detect)|body:%s", result.RespBody))
 					continue
 				}
-				g.db.TableIPQS.SetNew(keu, result)
-				g.reporting.SetOk(keu, result.RespBody)
-				g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", keu), fmt.Sprintf("%v", result), "RESPONSE"}
+				g.db.TableIpAddress.SetNew(ipKey, &result)
+				//g.db.TableIPQS.SetNew(keu, result)
+				g.reporting.SetOk(ipKey, result.RespBody)
+				g.Loger <- [4]string{"circle", fmt.Sprintf("[OK.OK]CallThirdParty[ip_key:%s][uag:%s]", ipKey, v.UserAgent.String), fmt.Sprintf("%v", result), "RESPONSE"}
 			}
 			time.Sleep(100 * time.Millisecond)
 			continue

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"net"
 	"net/http"
 	"time"

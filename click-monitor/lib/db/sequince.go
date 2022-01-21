@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/encod"
 	"github.com/xela07ax/toolsXela/tp"
 	"strings"

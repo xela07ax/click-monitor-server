@@ -2,7 +2,7 @@ package db
 
 import (
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 )
 
 //
@@ -11,7 +11,7 @@ import (
 //	"fmt"
 //	"github.com/niubaoshu/gotiny"
 //	"github.com/syndtr/goleveldb/leveldb"
-//	"github.com/xela07ax/rest-repiter/model"
+//	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 //	"github.com/xela07ax/toolsXela/encod"
 //	"strings"
 //	"time"

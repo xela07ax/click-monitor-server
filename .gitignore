@@ -10,6 +10,9 @@ quasar/
 tst/
 tmp/
 
+bin
+click-monitor/bin
+
 # Other files and folders
 .settings/
 .idea/

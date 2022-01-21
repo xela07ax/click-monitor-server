@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/niubaoshu/gotiny"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/encod"
 	"github.com/xela07ax/toolsXela/tp"
 	"strings"
@@ -20,11 +20,19 @@ type IpAddressTable struct {
 	loger            chan<- [4]string
 }
 
-func (ut *UserAgent) Get(id string) model.IPQSRow {
+func (ut *IpAddressTable) SetNew(key string, ipqRow *model.IPQSRow) {
+	ipqRow.Id = ut.sequences.GetNewUidTable(ut.sequences.Tables.IP)
+	if err := ut.db.Put([]byte(key), gotiny.Marshal(ipqRow), nil); err != nil {
+		ut.loger <- [4]string{ut.name, "Put", fmt.Sprintf("Не удалось записатьв таблицу IPQS| ERTX:%v", err), "1"}
+		tp.ExitWithSecTimeout(1)
+	}
+}
+
+func (ut *IpAddressTable) Get(id string) *model.IPQSRow {
 	userBt, err := ut.db.Get([]byte(id), nil)
 	if err == leveldb.ErrNotFound {
 		// пусто
-		return model.IPQSRow{}
+		return nil
 	} else if err != nil {
 		fn := fmt.Sprintf("=>%s", strings.Join([]string{ut.subName, fmt.Sprintf("Get UserDetail %s", id)}, "=>"))
 		ut.loger <- [4]string{ut.name, "nil", fmt.Sprintf("%s | Не удалось считать пользователя по Id из SlowБД | %v", fn, err), "ERROR"}
@@ -33,7 +41,7 @@ func (ut *UserAgent) Get(id string) model.IPQSRow {
 	// Данные найдены
 	var row model.IPQSRow
 	gotiny.Unmarshal(userBt, &row)
-	return row
+	return &row
 }
 
 //func (dt *IpAddressTable) SaveDialog(dialog model.IPQSRow) {

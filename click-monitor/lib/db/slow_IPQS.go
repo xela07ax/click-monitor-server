@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/niubaoshu/gotiny"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/encod"
 	"github.com/xela07ax/toolsXela/tp"
+	"regexp"
 	"strings"
 )
 
@@ -26,6 +27,50 @@ func (ut *IPQSTable) SetNew(key string, ipqRow model.IPQSRow) {
 		ut.loger <- [4]string{ut.name, "Put", fmt.Sprintf("Не удалось записатьв таблицу IPQS| ERTX:%v", err), "1"}
 		tp.ExitWithSecTimeout(1)
 	}
+}
+func (ut *IPQSTable) ReadAll() map[string][]string{
+	resultIpuag := make(map[string][]string)
+	iter := ut.db.NewIterator(nil, nil)
+	re := regexp.MustCompile("^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(.*)$")
+	for iter.Next() {
+		// Remember that the contents of the returned slice should not be modified, and
+		// only valid until the next call to Next.
+		key := iter.Key()
+		r2 := re.FindAllStringSubmatch(string(key), -1)[0]
+		//normal := model.IPQSRow{}
+		//gotiny.Unmarshal(iter.Value(), &normal)
+		//fmt.Println(normal)
+		resultIpuag[r2[1]] = []string{r2[2], string(iter.Value())}
+		//fmt.Println(r2[1])
+		//fmt.Println(r2[2])
+		//return
+		//value := iter.Value()
+		//normalKey := model.IPQSRow{}
+		//gotiny.Unmarshal(value, &normalKey)
+		//fmt.Println(normalKey.Uag)
+		//
+		//...
+	}
+	iter.Release()
+	err := iter.Error()
+	if err != nil {
+		panic(err)
+	}
+	//userBt, err := ut.db.NewIterator([]byte(key), nil)
+	//if err == leveldb.ErrNotFound {
+	//	// пусто
+	//	// ut.loger <- [4]string{ut.name, "leveldb.ErrNotFound", fmt.Sprintf("пусто:%s",key)}
+	//	return model.IPQSRow{}
+	//} else if err != nil {
+	//	fn := fmt.Sprintf("=>%s", strings.Join([]string{ut.subName, fmt.Sprintf("Get UserDetail %s", key)}, "=>"))
+	//	ut.loger <- [4]string{ut.name, "nil", fmt.Sprintf("%s | Не удалось считать пользователя по Id из SlowБД | %v", fn, err), "ERROR"}
+	//	tp.ExitWithSecTimeout(1)
+	//}
+	//// Данные найдены
+	//var row model.IPQSRow
+	//gotiny.Unmarshal(userBt, &row)
+	//return row
+	return resultIpuag
 }
 func (ut *IPQSTable) Get(key string) model.IPQSRow {
 	userBt, err := ut.db.Get([]byte(key), nil)

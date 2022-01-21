@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/xela07ax/rest-repiter/domain"
-	"github.com/xela07ax/rest-repiter/lib/chLogger"
-	"github.com/xela07ax/rest-repiter/lib/inputRpc"
-	"github.com/xela07ax/rest-repiter/lib/wsLoggerPlugin"
-	"github.com/xela07ax/rest-repiter/model"
+	"github.com/xela07ax/click-monitor-server/click-monitor/domain"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/chLogger"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/inputRpc"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/wsLoggerPlugin"
+	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/tp"
 	"os"
 	"path/filepath"
@@ -18,10 +18,11 @@ const configName = "config.json"
 
 func main() {
 	fmt.Printf("ಠ┗(▀̿Ĺ̯▀̿ ̿)┓ \n")
-	fmt.Printf("        Click monitor v1.15 +repiter module v1.4\n")
+	fmt.Printf("        Click monitor v1.16 +repiter module v1.4\n")
 	fmt.Printf("        	 v1.13 + [hotfix not match(user_agent, '^\\d')]\n")
 	fmt.Printf("        	 v1.14 + network_id != 43\n")
 	fmt.Printf("        	 v1.15 + (fix where datetime minus) g.Interval-1*time.Second\n")
+	fmt.Printf("        	 v1.16 + использием таблицу ip адресов, вместо связки ip+uag\n")
 	fmt.Printf("      ٩◔̯◔۶\n")
 	// Подготовим конфиг
 	dir, err := tp.BinDir()
