@@ -1,0 +1,1 @@
+2022-01-23 02:49:17 | FUNC: Daemon | TEXT: Wait got signal: exiting

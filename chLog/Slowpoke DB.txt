@@ -1,0 +1,11 @@
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: Добро пожаловать в управление локальным хранилищем, буду записывать данные в базу
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: Открываем таблицу user_agents | DT:/Users/admin/Documents/GitHub/click-monitor-server/click-monitor/bin/levelDB/userAgent
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: Открываем таблицу levelDB/ipqs | DT:/Users/admin/Documents/GitHub/click-monitor-server/click-monitor/bin/levelDB/ipqs
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: Открываем таблицу FileSequence | DT:/Users/admin/Documents/GitHub/click-monitor-server/click-monitor/bin/levelDB/Sequence
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: Открываем таблицу ip_addresses | DT:/Users/admin/Documents/GitHub/click-monitor-server/click-monitor/bin/levelDB/IPaddress
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: =>Sequences Generator=>Initialize | COM:Проверяем последовательность таблицы levelDB/IPaddress 
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: =>Sequences Generator=>Initialize | COM:Значение таблицы levelDB/IPaddress | DT:6803556
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: =>Sequences Generator=>Initialize | COM:Проверяем последовательность таблицы levelDB/userAgent 
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: =>Sequences Generator=>Initialize | COM:Значение таблицы levelDB/userAgent | DT:6800000
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: =>Sequences Generator=>Initialize | COM:Проверяем последовательность таблицы levelDB/ipqs 
+2022-01-23 02:49:17 | FUNC:Slowpoke DB | UNIT: nil | TEXT: =>Sequences Generator=>Initialize | COM:Значение таблицы levelDB/ipqs | DT:6803749
