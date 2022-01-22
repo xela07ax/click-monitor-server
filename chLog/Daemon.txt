@@ -1,0 +1,8 @@
+2022-01-23 02:12:16|FUNC:Daemon|UNIT:nil||TEXT: █║ Starting HTTP Listener ▌│║ on port: 1310
+2022-01-23 02:12:16|FUNC:Daemon|UNIT:waitForSignal||TEXT: Wait got signal: exiting
+2022-01-23 02:12:33|FUNC:Daemon|UNIT:nil||TEXT: █║ Starting HTTP Listener ▌│║ on port: 1310
+2022-01-23 02:12:33|FUNC:Daemon|UNIT:waitForSignal||TEXT: Wait got signal: exiting
+2022-01-23 02:14:20|FUNC:Daemon|UNIT:nil||TEXT: █║ Starting HTTP Listener ▌│║ on port: 1310
+2022-01-23 02:14:20|FUNC:Daemon|UNIT:waitForSignal||TEXT: Wait got signal: exiting
+2022-01-23 02:30:24|FUNC:Daemon|UNIT:nil||TEXT: █║ Starting HTTP Listener ▌│║ on port: 1310
+2022-01-23 02:30:24|FUNC:Daemon|UNIT:waitForSignal||TEXT: Wait got signal: exiting

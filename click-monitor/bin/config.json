@@ -1,15 +1,40 @@
 {
   "HttpServerPort": 1310,
-  "start_date": "2022-01-12T14:48:56.000Z",
   "interval": 60,
-  "ipqs_key": "************************",
-  "sender": {
-    "send": false,
-    "ip": "89.223.68.155",
-    "host_repiter": "http://769245-ce60489.*****.ru:1313/rpc",
-    "host_repiter_": "http://localhost:1313/rpc",
-    "service": "go.tracker.svc.repiter"
-  },
+  "stop_err": 17,
+  "mock": true,
+  "service": "go.tracker.svc.repiter",
+  "senders": [
+    {
+      "first_rq": 75,
+      "think_rq": 999,
+      "stop_err": 3,
+      "sleep": 12,
+      "ipqs_key": "************************",
+      "host_repiter": "http://769245-ce60489.*****.ru:1313/rpc"
+      },
+    {
+      "first_rq": 112,
+      "think_rq": 999,
+      "stop_err": 5,
+      "ipqs_key": "************************",
+      "host_repiter": "http://769245-ce60489.*****.ru:1331/rpc"
+      },
+    {
+      "first_rq": 132,
+      "think_rq": 999,
+      "stop_err": 1,
+      "ipqs_key": "************************",
+      "host_repiter": "http://769245-ce60489.*****.ru:1332/rpc"
+      },
+    {
+      "first_rq": 87,
+      "think_rq": 999,
+      "stop_err": 2,
+      "ipqs_key": "************************",
+      "host_repiter": "http://769245-ce60489.*****.ru:1333/rpc"
+      }
+  ],
   "reporting": {
     "db_path_userAgent": "levelDB/userAgent",
     "db_path_IPaddress": "levelDB/IPaddress",
