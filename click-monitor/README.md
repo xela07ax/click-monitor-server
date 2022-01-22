@@ -10,13 +10,7 @@
 4) Сортирует полученный результат на ошибки, ок и найденные в кеше для мини Репортинга 
     - отчет в реальном времени в папке report
     - сохранение в OLTP базу для дальнейшей работы с данными
-5) Кеширует запросы по ключу IP + UserAgent
-
-Скриншот ***click-monitor.exe***
-![Скриншот click-monitor.exe](./docs/desctop_app.png)  
-<img src="./docs/report_system.png" width="550" />  
-Скриншот удаленного ws терминала ***rest-repiter.exe***  
-<img src="./docs/ws_logger-repiter.png" width="550" />  
+5) Кеширует запросы по ключу IP и сохраняет UserAgent + IPqualityscore data
 
 Конфигурации лежат в папке bin 
 
@@ -29,15 +23,18 @@ CGO_ENABLED=0 GOOS=linux go build -gcflags "all=-N -l" -o click-monitor
 
 Далее необходимо сделать его исполняемым:
 ```sh
-chmod +x ./rest-repiter_v1.4
+chmod +x ./click-monitor
 ```
 Запуск:  
 ```sh
-./rest-repiter_v1.4 1>log1stdout.txt 2>log1stderr.txt
+./click-monitor
+or
+./click-monitor 1>log1stdout.txt 2>log1stderr.txt
 ```
 или если хотите оставить демона в системе
 ```sh
-nohup ./rest-repiter_v1.4 &
+nohup ./click-monitor &
+ctrl^C
 ```
 
 Замечания к выпуску:  
