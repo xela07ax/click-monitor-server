@@ -1,8 +1,0 @@
-2022-01-23 02:12:16|FUNC:Front Http Server|UNIT:nil||TEXT: Server is started
-2022-01-23 02:12:23|FUNC:Front Http Server|UNIT:nil||TEXT: =>Daemon=>Closer | COM:Безопасное завершение программы | DT:interrupt
-2022-01-23 02:12:33|FUNC:Front Http Server|UNIT:nil||TEXT: Server is started
-2022-01-23 02:12:59|FUNC:Front Http Server|UNIT:nil||TEXT: =>Daemon=>Closer | COM:Безопасное завершение программы | DT:interrupt
-2022-01-23 02:14:20|FUNC:Front Http Server|UNIT:nil||TEXT: Server is started
-2022-01-23 02:14:21|FUNC:Front Http Server|UNIT:nil||TEXT: =>Daemon=>Closer | COM:Безопасное завершение программы | DT:interrupt
-2022-01-23 02:30:24|FUNC:Front Http Server|UNIT:nil||TEXT: Server is started
-2022-01-23 02:30:25|FUNC:Front Http Server|UNIT:nil||TEXT: =>Daemon=>Closer | COM:Безопасное завершение программы | DT:interrupt
