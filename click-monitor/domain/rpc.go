@@ -26,7 +26,7 @@ func RpcRequest(service, data, url string, loger chan<- [4]string) (response *mo
 	//loger <- [4]string{ subName, "http.Post", fmt.Sprintf("url:%s|body:%s", url, body), "REQUEST"}
 	resp, err := http.Post(url, "", r)
 	if err != nil {
-		loger <- [4]string{ subName, "http.Post", fmt.Sprintf("err:%v|url:%s|body:%s", err, url, data), "ERROR"}
+		loger <- [4]string{ subName, fmt.Sprintf("http.Post[%s]", url), fmt.Sprintf("err:%v|url:%s|body:%s", err, url, data), "ERROR"}
 		return nil, err
 	}
 	defer resp.Body.Close()

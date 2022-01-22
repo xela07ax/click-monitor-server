@@ -1,7 +1,7 @@
 {
   "HttpServerPort": 1310,
   "interval": 60,
-  "stop_err": 17,
+  "stop_err": 2,
   "mock": true,
   "service": "go.tracker.svc.repiter",
   "senders": [

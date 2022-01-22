@@ -79,6 +79,7 @@ func (g *GenFilter) ErrDaemon() {
 	if len(g.cfg.Senders) < 1 {
 		panic(fmt.Errorf("хостов отправителей не может быть меньше 1-го"))
 	}
+	g.Loger <- [4]string{"GenFilter.ErrDaemon", "установнел хост отправителя", fmt.Sprintf("sendrHost: %s", g.cfg.Senders[0].HostRepiter), "INFO"}
 	g.Sender = g.cfg.Senders[0]
 	go func() {
 		var i int
