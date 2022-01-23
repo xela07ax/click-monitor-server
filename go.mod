@@ -10,6 +10,6 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/niubaoshu/gotiny v0.0.3
 	github.com/syndtr/goleveldb v1.0.0
-	github.com/xela07ax/toolsXela v0.0.0-20220112085506-6c2cb793f022
+	github.com/xela07ax/toolsXela v0.0.0-20220116194619-c1a757471d52
 	golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
 )

@@ -37,20 +37,13 @@ func RpcRequest(service, data, url string, loger chan<- [4]string) (response *mo
 		loger <- [4]string{ subName, "ioutil.ReadAll", fmt.Sprintf("resp.Body error: %v", err), "ERROR"}
 		return nil, err
 	}
-
 	if len(repBody) > 0 {
-		loger <- [4]string{ subName, "http.Post", fmt.Sprintf("body:%s", repBody), "RESPONSE"}
+		loger <- [4]string{ subName, fmt.Sprintf("http.Post[%s]", url), fmt.Sprintf("len(resp.Body)>0[body:%s]", repBody), "RESPONSE"}
 		response = new(model.RpcFields)
 		err = json.Unmarshal(repBody, response)
-		if err != nil {
-			loger <- [4]string{ subName, "json.Unmarshal", fmt.Sprintf("resp.Body error: %v", err), "ERROR"}
-			return nil, err
-		}
-
-		fmt.Printf("http.Post_ok:%v\n", response)
+		return
 	}
-
-	return
+	return nil, fmt.Errorf("len(resp.Body)!>0[ответ не может быть пустым]")
 }
 
 type Rpc struct {

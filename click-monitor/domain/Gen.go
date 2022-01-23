@@ -117,7 +117,7 @@ func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IP
 	result.Uag = userAgent
 	heandler := model.Handle{
 		Time:        result.Timestamp,
-		Send:        g.cfg.Mock,
+		Send:        !g.cfg.Mock,
 		RedirectUrl: fmt.Sprintf("https://ipqualityscore.com/api/json/ip/%s/%s", g.Sender.IpqsKey, ipAddress),
 		Params:      fmt.Sprintf("allow_public_access_points=true&fast=false&lighter_penalties=true&mobile=false&strictness=1&user_agent=%s", strings.ReplaceAll(userAgent, " ", "%20")),
 		Method:      "GET",
@@ -158,12 +158,13 @@ func isUpdateTariff(text string) bool {
 func (g *GenFilter) circle() {
 	rows, err := g.chRepo.Get(&g.filter)
 	if err != nil {
-		g.Loger <- [4]string{"GenFilter", fmt.Sprintf("get[%v|%v]", g.filter.TimestampFrom, g.filter.TimestampTo), fmt.Sprintf("%v", err), "ERROR"}
+		g.Loger <- [4]string{"GenFilter.Select", fmt.Sprintf("get[%v|%v]", g.filter.TimestampFrom, g.filter.TimestampTo), fmt.Sprintf("%v", err), "ERROR"}
 		time.Sleep(5 * time.Second)
 		g.circle()
 	}
 	var i int
 	if len(rows) > 0 {
+		g.Loger <- [4]string{"GenFilter.Select", "rows", fmt.Sprintf("extract: %d", len(rows)), "INFO"}
 		for _, v := range rows {
 			// проверить есть ли в кеше
 			ipKey := v.Ip.String()
@@ -188,7 +189,7 @@ func (g *GenFilter) circle() {
 				}
 				g.reporting.SenderHost = g.Sender.HostRepiter
 				if isUpdateTariff(result.RespBody) {
-					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", ipKey), fmt.Sprintf("IPQS Error [body: %v", result.RespBody), "ERROR"}
+					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", ipKey), fmt.Sprintf("IPQS Error [isUpdateTariff:true] [host:%s|body: %v", g.reporting.SenderHost, result.RespBody), "ERROR"}
 					g.reporting.SetErr(ipKey, fmt.Errorf("request not valid (success true not detect)|body:%s", result.RespBody))
 					g.ErrReq <- struct {}{}
 					continue
@@ -203,7 +204,7 @@ func (g *GenFilter) circle() {
 		}
 		//g.db.TableIPQS.SaveBath(ipqsRows)
 	} else {
-		g.Loger <- [4]string{"GenFilter", fmt.Sprintf("rows[%v|%v]", g.filter.TimestampFrom, g.filter.TimestampTo), fmt.Sprintf("%v", err), "NULL"}
+		g.Loger <- [4]string{"GenFilter.Select", fmt.Sprintf("rows[%v|%v]", g.filter.TimestampFrom, g.filter.TimestampTo), "нет строчек для обработки"}
 	}
 
 	<-g.ticker
