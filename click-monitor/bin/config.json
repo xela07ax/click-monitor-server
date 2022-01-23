@@ -4,6 +4,7 @@
   "stop_err": 2,
   "mock": true,
   "service": "go.tracker.svc.repiter",
+  "url_postback": "http://sky.net.kg/reciver/ip/",
   "senders": [
     {
       "first_rq": 75,

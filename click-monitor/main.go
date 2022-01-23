@@ -21,6 +21,7 @@ func main() {
 	fmt.Printf("        Click monitor v1.16 +repiter module v1.4\n")
 	fmt.Printf("        	 v1.16 + использием таблицу ip адресов, вместо связки ip+uag\n")
 	fmt.Printf("        	 v1.17.4 + балансируем между хостами для отправки\n")
+	fmt.Printf("        	 v1.18 (⌐■_■)❥\n")
 	fmt.Printf("      ٩◔̯◔۶\n")
 	// Подготовим конфиг
 	dir, err := tp.BinDir()

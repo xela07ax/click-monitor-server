@@ -76,7 +76,7 @@ func (sc *SequencesGen) GetNewUidTable(table []byte) int {
 		tp.ExitWithSecTimeout(1)
 	}
 	sicNum := encod.BytesToInt(sicNumBt)
-	fmt.Printf("SequencesGen|NEW|%s|Извлекли|DT:Num:%d\n", table, sicNum)
+	// fmt.Printf("SequencesGen|NEW|%s|Извлекли|DT:Num:%d\n", table, sicNum)
 	sicNum++
 	fmt.Printf("SequencesGen|NEW|%s|Инкремент|DT:Num:%d\n", table, sicNum)
 	if err := sc.db.Put(table, encod.IntToBytes(sicNum), nil); err != nil {

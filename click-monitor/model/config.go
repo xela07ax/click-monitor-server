@@ -39,15 +39,16 @@ type Sender struct {
 }
 
 type Config struct {
-	HttpServerPort    int        `json:"HttpServerPort"`
-	Interval          int        `json:"interval"`
-	StopErr           int        `json:"stop_err"`
-	Mock              bool       `json:"mock"`
-	Service           string     `json:"service"`
-	Senders           []*Sender  `json:"senders"`
-	Path              Pathes     `json:"path"`
-	ChDb              Clickhouse `json:"clickhouse"`
-	Reporting         Report     `json:"reporting"`
+	HttpServerPort int        `json:"HttpServerPort"`
+	Interval       int        `json:"interval"`
+	StopErr        int        `json:"stop_err"`
+	Mock           bool       `json:"mock"`
+	UrlPostback    string     `json:"url_postback"`
+	Service        string     `json:"service"`
+	Senders        []*Sender  `json:"senders"`
+	Path           Pathes     `json:"path"`
+	ChDb           Clickhouse `json:"clickhouse"`
+	Reporting      Report     `json:"reporting"`
 	// В конфиге не проставлять!
 	KeySession []byte
 	ChExit     chan os.Signal `json:"_"`

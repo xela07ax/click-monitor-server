@@ -25,10 +25,10 @@ type GenFilter struct {
 	ErrReq                 chan interface{}
 	globalErr              int
 	//iSender                error
-	Sender                 *model.Sender
-	limit int
+	Sender      *model.Sender
+	limit       int
 	cashSenders map[*model.Sender]interface{}
-	Loger chan<- [4]string
+	Loger       chan<- [4]string
 }
 
 func New_GenFilter_ChDbMonitor(cfg *model.Config, loger chan<- [4]string) *GenFilter {
@@ -69,7 +69,7 @@ func (g *GenFilter) replaceSender() {
 			delete(g.cashSenders, nextSender)
 		} else {
 			g.limit = nextSender.FirstRq
-			g.cashSenders[nextSender] = struct {}{}
+			g.cashSenders[nextSender] = struct{}{}
 		}
 		g.Sender = nextSender
 		g.cfg.Mock = false
@@ -82,7 +82,7 @@ func (g *GenFilter) ErrDaemon() {
 	g.Sender = g.cfg.Senders[0]
 	g.limit = g.Sender.FirstRq
 	g.Loger <- [4]string{"GenFilter.ErrDaemon", "установнел хост отправителя", fmt.Sprintf("sendrHost: %s|limit:%d", g.Sender.HostRepiter, g.limit), "INFO"}
-	g.cashSenders[g.Sender] = struct {}{}
+	g.cashSenders[g.Sender] = struct{}{}
 	go func() {
 		var i int
 		for {
@@ -118,7 +118,7 @@ func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IP
 	heandler := model.Handle{
 		Time:        result.Timestamp,
 		Send:        !g.cfg.Mock,
-		RedirectUrl: fmt.Sprintf("https://ipqualityscore.com/api/json/ip/%s/%s", g.Sender.IpqsKey, ipAddress),
+		RedirectUrl: fmt.Sprintf("%s%s/%s", g.cfg.UrlPostback, g.Sender.IpqsKey, ipAddress),
 		Params:      fmt.Sprintf("allow_public_access_points=true&fast=false&lighter_penalties=true&mobile=false&strictness=1&user_agent=%s", strings.ReplaceAll(userAgent, " ", "%20")),
 		Method:      "GET",
 	}
@@ -130,11 +130,6 @@ func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IP
 		result.RespCode = respRpc.RespCode
 		result.RespBody = respRpc.RespBody
 	}
-	//fmt.Printf("RpcRequest:%v\n", respRpc)
-	//if resp.StatusCode != 200 {
-	//	err = fmt.Errorf("wrong response code: %d (%s)", resp.StatusCode, resp.Status)
-	//	return
-	//}
 
 	return
 }
@@ -165,14 +160,12 @@ func (g *GenFilter) circle() {
 	var i int
 	if len(rows) > 0 {
 		g.Loger <- [4]string{"GenFilter.Select", "rows", fmt.Sprintf("extract: %d", len(rows)), "INFO"}
-		for _, v := range rows {
+		for i, v := range rows {
 			// проверить есть ли в кеше
 			ipKey := v.Ip.String()
-			//keu := fmt.Sprintf("%s%s", ipKey, v.UserAgent.String)
 			rowIpqs := g.db.TableIpAddress.Get(ipKey)
 			if rowIpqs != nil {
 				rowIpqs.RefererId = rowIpqs.Id
-				//g.db.Sequences.SetCashDetect(ipKey)
 				g.reporting.SetCashDetect(ipKey)
 			} else {
 				i++
@@ -182,22 +175,22 @@ func (g *GenFilter) circle() {
 				}
 				result, err := g.CallThirdParty(v.Ip.String(), v.UserAgent.String)
 				if err != nil {
-					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", ipKey), fmt.Sprintf("внутренние ошибки [err:%v|resu:%v]", err, result), "ERROR"}
-					// g.reporting.SetErr(ipKey, fmt.Errorf("внутренние ошибки [err:%v|body:%s]", err, result.RespBody))
+					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_POST]", fmt.Sprintf("внутренние ошибки [ip:%s][err:%v|resu:%v]", ipKey, err, result), "ERROR"}
 					// если это внутренние ошибки, на будем их регистрировать по правилам конфигурации
 					continue
 				}
 				g.reporting.SenderHost = g.Sender.HostRepiter
 				if isUpdateTariff(result.RespBody) {
-					g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[ip_key:%s]", ipKey), fmt.Sprintf("IPQS Error [isUpdateTariff:true] [host:%s|body: %v", g.reporting.SenderHost, result.RespBody), "ERROR"}
-					g.reporting.SetErr(ipKey, fmt.Errorf("request not valid (success true not detect)|body:%s", result.RespBody))
-					g.ErrReq <- struct {}{}
+					ertx := fmt.Sprintf("postbackService resp. Error [tip:QUOTA][host:%s][sender:%s][ip:%s]", g.cfg.UrlPostback, g.reporting.SenderHost, ipKey)
+					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_QUOTA]", ertx, "ERROR"}
+					g.reporting.SetErr(ipKey, fmt.Errorf("%s(⌐■_■)❥%s", ertx, result.RespBody))
+					g.ErrReq <- struct{}{}
 					continue
 				}
 				g.globalErr = 0
 				g.db.TableIpAddress.SetNew(ipKey, &result)
 				g.reporting.SetOk(ipKey, result.RespBody)
-				g.Loger <- [4]string{"circle", fmt.Sprintf("[OK.OK]CallThirdParty[ip_key:%s][uag:%s]", ipKey, v.UserAgent.String), fmt.Sprintf("%v", result), "RESPONSE"}
+				g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[SetOk][%d]", i+1), fmt.Sprintf("[ip:%s][uag:%s]", ipKey, v.UserAgent.String)}
 			}
 			time.Sleep(100 * time.Millisecond)
 			continue
