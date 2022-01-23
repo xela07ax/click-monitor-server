@@ -1,2 +1,0 @@
-2022-01-23 02:49:17 | FUNC:Daemon | UNIT: nil | TEXT: █║ Starting HTTP Listener ▌│║ on port: 1310
-2022-01-23 02:49:17 | FUNC:Daemon | UNIT: waitForSignal | TEXT: Wait got signal: exiting

@@ -1,1 +1,0 @@
-2022-01-23 02:49:17 | FUNC: GenFilter | TEXT: LogRepo.Get.Query[2022-01-22_23:48:18|2022-01-22_23:49:17|0]err:dial tcp 127.0.0.1:9000: connect: connection refused

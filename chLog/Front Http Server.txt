@@ -1,2 +1,0 @@
-2022-01-23 02:49:17 | FUNC:Front Http Server | UNIT: nil | TEXT: Server is started
-2022-01-23 02:49:17 | FUNC:Front Http Server | UNIT: nil | TEXT: =>Daemon=>Closer | COM:Безопасное завершение программы | DT:interrupt
