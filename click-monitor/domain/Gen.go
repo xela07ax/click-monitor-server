@@ -104,7 +104,7 @@ func (g *GenFilter) ErrDaemon() {
 				g.replaceSender()
 				continue
 			}
-			g.Loger <- [4]string{"GenFilter.ErrDaemon", "resp.error.counter", fmt.Sprintf("зарегистрировано ошибок:%d|предел:%d", i, g.limit), "WARNING"}
+			g.Loger <- [4]string{"GenFilter.ErrDaemon", "resp.error.counter", fmt.Sprintf("зарегистрировано ошибок:%d|предел:%d", i, g.Sender.StopErr), "WARNING"}
 		}
 	}()
 }
