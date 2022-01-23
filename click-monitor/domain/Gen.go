@@ -81,7 +81,7 @@ func (g *GenFilter) ErrDaemon() {
 	}
 	g.Sender = g.cfg.Senders[0]
 	g.limit = g.Sender.FirstRq
-	g.Loger <- [4]string{"GenFilter.ErrDaemon", "установнел хост отправителя", fmt.Sprintf("sendrHost: %s|limit:%d", g.Sender.HostRepiter, g.limit), "INFO"}
+	g.Loger <- [4]string{"GenFilter.ErrDaemon", "установлен хост отправителя", fmt.Sprintf("sendrHost: %s|limit:%d", g.Sender.HostRepiter, g.limit), "INFO"}
 	g.cashSenders[g.Sender] = struct{}{}
 	go func() {
 		var i int
@@ -181,7 +181,7 @@ func (g *GenFilter) circle() {
 				}
 				g.reporting.SenderHost = g.Sender.HostRepiter
 				if isUpdateTariff(result.RespBody) {
-					ertx := fmt.Sprintf("postbackService resp. Error [tip:QUOTA][host:%s][sender:%s][ip:%s]", g.cfg.UrlPostback, g.reporting.SenderHost, ipKey)
+					ertx := fmt.Sprintf("postbackService resp. Error [tip:QUOTA][host:%s][sender:%s][ip:%s]【%s】舞", g.cfg.UrlPostback, g.reporting.SenderHost, ipKey, result.RespBody)
 					if g.cfg.Mock {
 						ertx = fmt.Sprintf("запрос не был отправлен [tip:MOCK][resp: %v]", result)
 					}
