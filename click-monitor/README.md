@@ -36,9 +36,3 @@ or
 nohup ./click-monitor &
 ctrl^C
 ```
-
-Замечания к выпуску:  
-- Пример запроса для rest-repiter
-```json
-{"service":"go.tracker.svc.repiter","endpoint":"","request":"{\"Time\":\"2022-01-15T00:24:13.1951894+03:00\",\"Send\":true,\"RedirectUrl\":\"http://sky.net.kg/reciver/ip/91.193.178.11\",\"Params\":\"allow_public_access_points=true\\u0026fast=false\\u0026lighter_penalties=true\\u0026mobile=false\\u0026strictness=1\\u0026user_agent=Mozilla/5.0%20(Linux;%20arm_64;%20Android%2011;%20SM-A805F)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/94.0.4606.85%20YaApp_Android/21.117.1%20YaSearchBrowser/21.117.1%20BroPP/1.0%20SA/3%20Mobile%20Safari/537.36\",\"Method\":\"GET\",\"Body\":\"\",\"Type\":\"\"}"}
-```
