@@ -12,6 +12,7 @@ tmp/
 
 bin
 click-monitor/bin
+chlog
 
 # Other files and folders
 .settings/
