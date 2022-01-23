@@ -160,7 +160,7 @@ func (g *GenFilter) circle() {
 	var i int
 	if len(rows) > 0 {
 		g.Loger <- [4]string{"GenFilter.Select", "rows", fmt.Sprintf("extract: %d", len(rows)), "INFO"}
-		for i, v := range rows {
+		for iRow, v := range rows {
 			// проверить есть ли в кеше
 			ipKey := v.Ip.String()
 			rowIpqs := g.db.TableIpAddress.Get(ipKey)
@@ -175,22 +175,25 @@ func (g *GenFilter) circle() {
 				}
 				result, err := g.CallThirdParty(v.Ip.String(), v.UserAgent.String)
 				if err != nil {
-					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_POST]", fmt.Sprintf("внутренние ошибки [ip:%s][err:%v|resu:%v]", ipKey, err, result), "ERROR"}
+					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_POST]", fmt.Sprintf("ошибка REST [ip:%s][err:%v|resu:%v]", ipKey, err, result), "ERROR"}
 					// если это внутренние ошибки, на будем их регистрировать по правилам конфигурации
 					continue
 				}
 				g.reporting.SenderHost = g.Sender.HostRepiter
 				if isUpdateTariff(result.RespBody) {
 					ertx := fmt.Sprintf("postbackService resp. Error [tip:QUOTA][host:%s][sender:%s][ip:%s]", g.cfg.UrlPostback, g.reporting.SenderHost, ipKey)
-					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_QUOTA]", ertx, "ERROR"}
-					g.reporting.SetErr(ipKey, fmt.Errorf("%s(⌐■_■)❥%s", ertx, result.RespBody))
+					if g.cfg.Mock {
+						ertx = fmt.Sprintf("запрос не был отправлен [tip:MOCK][resp: %v]", result)
+					}
+					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_QUOTA]", ertx, "WARNING"}
+					g.reporting.SetErr(ipKey, fmt.Errorf("%s", ertx))
 					g.ErrReq <- struct{}{}
 					continue
 				}
 				g.globalErr = 0
 				g.db.TableIpAddress.SetNew(ipKey, &result)
 				g.reporting.SetOk(ipKey, result.RespBody)
-				g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[SetOk][%d]", i+1), fmt.Sprintf("[ip:%s][uag:%s]", ipKey, v.UserAgent.String)}
+				g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[SetOk][%d]", iRow+1), fmt.Sprintf("[ip:%s][uag:%s]", ipKey, v.UserAgent.String)}
 			}
 			time.Sleep(100 * time.Millisecond)
 			continue
