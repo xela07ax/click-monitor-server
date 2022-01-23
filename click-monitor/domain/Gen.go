@@ -204,7 +204,7 @@ func (g *GenFilter) circle() {
 		}
 		//g.db.TableIPQS.SaveBath(ipqsRows)
 	} else {
-		g.Loger <- [4]string{"GenFilter.Select", fmt.Sprintf("rows[%v|%v]", g.filter.TimestampFrom, g.filter.TimestampTo), "нет строчек для обработки"}
+		g.Loger <- [4]string{"GenFilter.Select", "rows", "нет строчек для обработки"}
 	}
 
 	<-g.ticker
