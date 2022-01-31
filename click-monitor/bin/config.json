@@ -3,7 +3,7 @@
   "interval": 145,
   "stop_err": 44,
   "cash_lenth": 56,
-  "mock": true,
+  "mock": false,
   "service": "go.tracker.svc.repiter",
   "url_postback": "http://sky.net.kg/reciver/ip/",
   "algorithm": {
