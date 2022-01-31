@@ -1,4 +1,4 @@
-package domain
+package inputRpc
 
 import (
 	"bytes"

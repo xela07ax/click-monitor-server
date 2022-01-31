@@ -20,10 +20,36 @@ type IpAddressTable struct {
 	loger            chan<- [4]string
 }
 
+func (ut *IpAddressTable) ReadAll() []model.IPQSRow {
+	resultIpuag := make([]model.IPQSRow, 0, 10000)
+	iter := ut.db.NewIterator(nil, nil)
+	for iter.Next() {
+		key := iter.Key()
+		normal := model.IPQSRow{}
+		gotiny.Unmarshal(iter.Value(), &normal)
+		normal.SenderIp = string(key)
+		resultIpuag = append(resultIpuag, normal)
+	}
+	iter.Release()
+	err := iter.Error()
+	if err != nil {
+		panic(err)
+	}
+	return resultIpuag
+}
+
 func (ut *IpAddressTable) SetNew(key string, ipqRow *model.IPQSRow) {
 	ipqRow.Id = ut.sequences.GetNewUidTable(ut.sequences.Tables.IP)
 	if err := ut.db.Put([]byte(key), gotiny.Marshal(ipqRow), nil); err != nil {
 		ut.loger <- [4]string{ut.name, "Put", fmt.Sprintf("Не удалось записатьв таблицу IPQS| ERTX:%v", err), "1"}
+		tp.ExitWithSecTimeout(1)
+	}
+}
+func (ut *IpAddressTable) Del(key string) {
+	err := ut.db.Delete([]byte(key), nil)
+	if err != nil {
+		fn := fmt.Sprintf("=>%s", strings.Join([]string{ut.subName, fmt.Sprintf("Delete UserDetail %s", key)}, "=>"))
+		ut.loger <- [4]string{ut.name, "nil", fmt.Sprintf("%s | Не удалось Delete пользователя по Id из SlowБД | %v", fn, err), "ERROR"}
 		tp.ExitWithSecTimeout(1)
 	}
 }

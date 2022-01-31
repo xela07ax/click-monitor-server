@@ -6,7 +6,6 @@ import (
 	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/tp"
 	"path/filepath"
-	"strings"
 	"time"
 )
 
@@ -24,25 +23,18 @@ func NewReporting(cfg *model.Config, loger chan<- [4]string) *Reporting {
 	return &Reporting{cfg: cfg, Loger: loger}
 }
 
-func (r *Reporting) SetErr(key string, errSv error) {
-	b, pthFile := r.openFile(fmt.Sprintf("%s_resp_err_%s", getDay(), cleanHost(r.SenderHost)))
-	r.writeFile(pthFile, []byte(fmt.Sprintf("[%v]%s\n%s", tp.Getime(), fmt.Sprintf("%s║▌%v", key, errSv), b)))
+func (r *Reporting) SetErr(sender string, errSv error) {
+	b, pthFile := r.openFile(fmt.Sprintf("%s_resp_err_%s", sender, getDay())) // cleanHost(r.SenderHost)
+	r.writeFile(pthFile, []byte(fmt.Sprintf("[%v]%s\n%s", tp.Getime(), fmt.Sprintf("║▌%v", errSv), b)))
 }
 
-func cleanHost(host string) string {
-	host = strings.ReplaceAll(host,"http://","")
-	host = strings.ReplaceAll(host,".","")
-	host = strings.ReplaceAll(host,":","")
-	host = strings.ReplaceAll(host,"/rpc","")
-	return host
-}
 func getDay() string  {
 	return time.Now().Format("20060102")
 }
 
-func (r *Reporting) SetOk(key, body string) {
+func (r *Reporting) SetOk(key, body, sender string) {
 	tp.Getime()
-	b, pthFile := r.openFile(fmt.Sprintf("%s_resp_ok_%s", getDay(), cleanHost(r.SenderHost)))
+	b, pthFile := r.openFile(fmt.Sprintf("%s_resp_ok_%s", getDay(), sender)) //cleanHost(r.SenderHost)
 	r.writeFile(pthFile, []byte(fmt.Sprintf("[%v]%s\n%s", tp.Getime(), fmt.Sprintf("%s║▌%v", key, body), b)))
 }
 

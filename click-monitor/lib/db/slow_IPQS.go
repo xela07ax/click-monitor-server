@@ -88,6 +88,14 @@ func (ut *IPQSTable) Get(key string) model.IPQSRow {
 	gotiny.Unmarshal(userBt, &row)
 	return row
 }
+func (ut *IPQSTable) Del(key string) {
+	err := ut.db.Delete([]byte(key), nil)
+	if err != nil {
+		fn := fmt.Sprintf("=>%s", strings.Join([]string{ut.subName, fmt.Sprintf("Delete UserDetail %s", key)}, "=>"))
+		ut.loger <- [4]string{ut.name, "nil", fmt.Sprintf("%s | Не удалось Delete пользователя по Id из SlowБД | %v", fn, err), "ERROR"}
+		tp.ExitWithSecTimeout(1)
+	}
+}
 
 //func (dt *IPQSTable) SaveDialog(dialog model.IPQSRow) {
 //	fn := fmt.Sprintf("=>%s",strings.Join([]string{dt.subName,"Save IPQSRow"},"=>"))

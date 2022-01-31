@@ -1,40 +1,72 @@
 {
   "HttpServerPort": 1310,
-  "interval": 60,
-  "stop_err": 3,
+  "interval": 145,
+  "stop_err": 44,
+  "cash_lenth": 56,
   "mock": true,
   "service": "go.tracker.svc.repiter",
   "url_postback": "http://sky.net.kg/reciver/ip/",
+  "algorithm": {
+    "async": true,
+    "sync": false
+  },
+  "mode_start": {
+    "counter": false,
+    "updater": false,
+    "click_monitor": false,
+    "click_monitor_async": true
+  },
   "senders": [
     {
-      "first_rq": 75,
+      "name": "docker_3",
+      "first_rq": 151,
+      "think_rq": 999,
+      "stop_err": 11,
+      "sleep": 186,
+      "err_detect": false,
+      "ipqs_key": "************************",
+      "host_repiter": "http://769245.*****.ru:1333/rpc"
+    },
+    {
+      "name": "office_2",
+      "first_rq": 121,
+      "think_rq": 999,
+      "stop_err": 9,
+      "sleep": 18,
+      "err_detect": false,
+      "ipqs_key": "************************",
+      "host_repiter": "http://769245.*****.ru:1334/rpc"
+    },
+    {
+      "name": "timeweb_vds",
+      "first_rq": 110,
       "think_rq": 999,
       "stop_err": 3,
-      "sleep": 12,
+      "sleep": 15,
+      "err_detect": false,
       "ipqs_key": "************************",
-      "host_repiter": "http://769245-ce60489.*****.ru:1313/rpc"
-      },
+      "host_repiter": "http://769245.*****.ru:1335/rpc"
+    },
     {
-      "first_rq": 112,
+      "name": "pc_kg",
+      "first_rq": 138,
       "think_rq": 999,
-      "stop_err": 5,
+      "stop_err": 12,
+      "sleep": 23,
+      "err_detect": false,
       "ipqs_key": "************************",
-      "host_repiter": "http://769245-ce60489.*****.ru:1331/rpc"
-      },
+      "host_repiter": "http://769245.*****.ru:1336/rpc"
+    },
     {
-      "first_rq": 132,
+      "name": "office",
+      "first_rq": 121,
       "think_rq": 999,
-      "stop_err": 1,
+      "stop_err": 9,
+      "sleep": 18,
+      "err_detect": false,
       "ipqs_key": "************************",
-      "host_repiter": "http://769245-ce60489.*****.ru:1332/rpc"
-      },
-    {
-      "first_rq": 87,
-      "think_rq": 999,
-      "stop_err": 2,
-      "ipqs_key": "************************",
-      "host_repiter": "http://769245-ce60489.*****.ru:1333/rpc"
-      }
+      "host_repiter": "http://769245.*****.ru:1337/rpc"
+    }
   ],
   "reporting": {
     "db_path_userAgent": "levelDB/userAgent",
@@ -53,8 +85,20 @@
     "gen_time": "gen_time"
   },
   "clickhouse": {
+    "mock_": true,
+    "ssh_": {
+      "sshServerHost": "195.200.201.202",
+      "sshServerPort": 22,
+      "sshUserName": "hoqu",
+      "sshPrivateKeyFile": "/Users/admin/.ssh/id_rsa",
+      "sshLocalHost": "localhost",
+      "sshLocalPort": 9123,
+      "sshRemoteHost": "127.0.0.1",
+      "sshRemotePort": 9000,
+      "clickhouse_dsn": "tcp://localhost:9123?database=hoqu_fiat"
+    },
     "timezone": 3,
-    "clickhouse_dsn" : "tcp://127.0.0.1:9000?database=hoqu_fiat",
-    "kittenhouse_dsn" : "http://127.0.0.1:13338?database=hoqu_fiat&debug=1"
+    "clickhouse_dsn": "tcp://195.200.201.202:9000?database=hoqu_fiat",
+    "kittenhouse_dsn": "http://195.200.201.202:13338?database=hoqu_fiat"
   }
 }

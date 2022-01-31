@@ -21,7 +21,7 @@ const (
 	StatusError   Status = "error"
 
 	PageSizeMax     int32    = 100
-	PageSizeDefault PageSize = 25
+	PageSizeDefault PageSize = 50
 )
 
 var (

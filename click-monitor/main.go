@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/xela07ax/click-monitor-server/click-monitor/domain"
-	"github.com/xela07ax/click-monitor-server/click-monitor/lib/inputRpc"
 	"github.com/xela07ax/click-monitor-server/click-monitor/lib/wsLoggerPlugin"
 	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/chLogger"
@@ -21,7 +20,7 @@ func main() {
 	fmt.Printf("        Click monitor v1.16 +repiter module v1.4\n")
 	fmt.Printf("        	 v1.16 + использием таблицу ip адресов, вместо связки ip+uag\n")
 	fmt.Printf("        	 v1.17.4 + балансируем между хостами для отправки\n")
-	fmt.Printf("        	 v1.18 (⌐■_■)❥\n")
+	fmt.Printf("        	 v1.19.5 ❥ работа в асинхронном режиме\n")
 	fmt.Printf("      ٩◔̯◔۶\n")
 	// Подготовим конфиг
 	dir, err := tp.BinDir()
@@ -39,11 +38,12 @@ func main() {
 	logEr.RunLogerDaemon()
 	logErWs.Loger = logEr.ChInLog
 
-	services := make(map[string]chan <-model.Pino)
-	rpc := inputRpc.NewRpc(cfg, logErWs.Loger, services)
-	logErWs.Interpretator = rpc.InputMsg
+	//services := make(map[string]chan <-model.Pino)
+	//rpc := inputRpc.NewRpc(cfg, logErWs.Loger, services)
+	//logErWs.Interpretator = rpc.InputMsg
 
 	// Инициализируем репозитории
+
 	domain.New_GenFilter_ChDbMonitor(cfg, logEr.ChInLog)
 
 	// Запускаем сервис

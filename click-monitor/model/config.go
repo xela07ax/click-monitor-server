@@ -11,7 +11,21 @@ type Pathes struct {
 	BinDir  string
 }
 
+type Ssh struct {
+	ServerHost     string `json:"sshServerHost"`
+	ServerPort     int    `json:"sshServerPort"`
+	UserName       string `json:"sshUserName"`
+	PrivateKeyFile string `json:"sshPrivateKeyFile"`
+	LocalHost      string `json:"sshLocalHost"`
+	LocalPort      int    `json:"sshLocalPort"`
+	RemoteHost     string `json:"sshRemoteHost"`
+	RemotePort     int    `json:"sshRemotePort"`
+	ClickhouseDsn  string `json:"clickhouse_dsn"`
+}
+
 type Clickhouse struct {
+	Mock           bool   `json:"mock"`
+	Ssh            *Ssh   `json:"ssh"`
 	Timezone       int    `json:"timezone"`
 	KittenhouseDsn string `json:"kittenhouse_dsn"`
 	ClickhouseDsn  string `json:"clickhouse_dsn"`
@@ -30,12 +44,20 @@ type Report struct {
 }
 
 type Sender struct {
+	Name        string `json:"name"`
 	FirstRq     int    `json:"first_rq"`
 	ThinkRq     int    `json:"think_rq"`
 	StopErr     int    `json:"stop_err"`
+	ErrDetect   bool   `json:"err_detect"`
 	Sleep       int    `json:"sleep"`
 	IpqsKey     string `json:"ipqs_key"`
 	HostRepiter string `json:"host_repiter"`
+}
+type Mode struct {
+	Counter           bool `json:"counter"`
+	Updater           bool `json:"updater"`
+	ClickMonitor      bool `json:"click_monitor"`
+	ClickMonitorAsync bool `json:"click_monitor_async"`
 }
 
 type Config struct {
@@ -43,9 +65,11 @@ type Config struct {
 	Interval       int        `json:"interval"`
 	StopErr        int        `json:"stop_err"`
 	Mock           bool       `json:"mock"`
+	CashLenth      int        `json:"cash_lenth"`
 	UrlPostback    string     `json:"url_postback"`
 	Service        string     `json:"service"`
 	Senders        []*Sender  `json:"senders"`
+	ModeStart      Mode       `json:"mode_start"`
 	Path           Pathes     `json:"path"`
 	ChDb           Clickhouse `json:"clickhouse"`
 	Reporting      Report     `json:"reporting"`

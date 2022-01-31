@@ -1,14 +1,15 @@
 package domain
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/xela07ax/click-monitor-server/click-monitor/lib/clickhouse"
 	"github.com/xela07ax/click-monitor-server/click-monitor/lib/db"
 	"github.com/xela07ax/click-monitor-server/click-monitor/lib/reporter"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/reqestWrkHub"
+	"github.com/xela07ax/click-monitor-server/click-monitor/lib/timeBetweenGen"
 	"github.com/xela07ax/click-monitor-server/click-monitor/model"
 	"github.com/xela07ax/toolsXela/tp"
-	"strings"
+	"log"
 	"time"
 )
 
@@ -23,6 +24,7 @@ type GenFilter struct {
 	reporting              *reporter.Reporting
 	db                     *db.Slowpoke
 	ErrReq                 chan interface{}
+	sended                 map[string]interface{} // будем кешировать отправленных в работу (осторошно, возможна утечка памяти!)
 	globalErr              int
 	//iSender                error
 	Sender      *model.Sender
@@ -35,175 +37,43 @@ func New_GenFilter_ChDbMonitor(cfg *model.Config, loger chan<- [4]string) *GenFi
 	slowPoke := db.NewStore(cfg, loger)
 	slowPoke.RunMinion()
 
-	gen := &GenFilter{db: slowPoke, reporting: reporter.NewReporting(cfg, loger), Interval: time.Duration(cfg.Interval) * time.Second, Loger: loger, chRepo: clickhouse.NewLogRepo(cfg, loger), cfg: cfg, ErrReq: make(chan interface{}, 100), cashSenders: make(map[*model.Sender]interface{})}
-	gen.ErrDaemon()
-	gen.calc()
+	gen := &GenFilter{db: slowPoke, reporting: reporter.NewReporting(cfg, loger),
+		Interval: time.Duration(cfg.Interval) * time.Second,
+		Loger:    loger, chRepo: clickhouse.NewLogRepo(cfg, loger),
+		cfg: cfg, ErrReq: make(chan interface{}, 100),
+		cashSenders: make(map[*model.Sender]interface{}),
+		sended:      make(map[string]interface{})}
 
-	go gen.circle()
-	return gen
-}
-
-func (g *GenFilter) getIndexSender(sender *model.Sender) int {
-	for i, s := range g.cfg.Senders {
-		if s == sender {
-			return i
-		}
+	if cfg.ModeStart.Counter {
+		loger <- [4]string{"StartMonitor", "startMode.Counter[TableIpAddress]", fmt.Sprintf("%d", len(slowPoke.TableIpAddress.ReadAll())), "INFO"}
+		tp.ExitWithSecTimeout(0)
 	}
-	panic(fmt.Errorf("не найдена ссылка отправителя"))
-}
-
-func (g *GenFilter) replaceSender() {
-	g.cfg.Mock = true
-	go func() {
-		iSender := g.getIndexSender(g.Sender)
-		iSenderNext := iSender + 1
-		if iSenderNext == len(g.cfg.Senders) {
-			iSenderNext = 0
-		}
-		nextSender := g.cfg.Senders[iSenderNext]
-		g.Loger <- [4]string{"GenFilter.replaceSender", fmt.Sprintf("bad:%s|next:%s", g.Sender.HostRepiter, nextSender.HostRepiter), fmt.Sprintf("sleep:%d minutes START", nextSender.Sleep), "INFO"}
-		time.Sleep(time.Duration(nextSender.Sleep) * time.Minute)
-		g.Loger <- [4]string{"GenFilter.replaceSender", fmt.Sprintf("bad:%s|next:%s", g.Sender.HostRepiter, nextSender.HostRepiter), fmt.Sprintf("sleep:%d minutes END", nextSender.Sleep), "INFO"}
-		if _, ok := g.cashSenders[nextSender]; ok {
-			g.limit = nextSender.ThinkRq
-			delete(g.cashSenders, nextSender)
-		} else {
-			g.limit = nextSender.FirstRq
-			g.cashSenders[nextSender] = struct{}{}
-		}
-		g.Sender = nextSender
-		g.cfg.Mock = false
-	}()
-}
-func (g *GenFilter) ErrDaemon() {
-	if len(g.cfg.Senders) < 1 {
-		panic(fmt.Errorf("хостов отправителей не может быть меньше 1-го"))
-	}
-	g.Sender = g.cfg.Senders[0]
-	g.limit = g.Sender.FirstRq
-	g.Loger <- [4]string{"GenFilter.ErrDaemon", "установлен хост отправителя", fmt.Sprintf("sendrHost: %s|limit:%d", g.Sender.HostRepiter, g.limit), "INFO"}
-	g.cashSenders[g.Sender] = struct{}{}
-	go func() {
-		var i int
-		for {
-			<-g.ErrReq // ошибка ответа или другая, нам не ваажно, есть ошибки, переключаем по правилу
-			if g.cfg.Mock {
-				g.Loger <- [4]string{"GenFilter.ErrDaemon", g.Sender.HostRepiter, "IsMock:true (игнорируем ошибку)", "INFO"}
-				continue
-			}
-			if g.globalErr > g.cfg.StopErr {
-				g.Loger <- [4]string{"GenFilter.ErrDaemon", fmt.Sprintf("globalErrPredel:%d", g.globalErr), "достигли максимальное количество ошибок на всех хостах, завершение работы", "WARNING"}
-				tp.ExitWithSecTimeout(1)
-			}
-			i++
-			// смотрим квоту ошибок
-			if i > g.Sender.StopErr {
-				// надо останавливаться или менять отправителя
-				g.globalErr++
-				i = 0
-				g.replaceSender()
-				continue
-			}
-			g.Loger <- [4]string{"GenFilter.ErrDaemon", "resp.error.counter", fmt.Sprintf("зарегистрировано ошибок:%d|предел:%d", i, g.Sender.StopErr), "WARNING"}
-		}
-	}()
-}
-func (g *GenFilter) CallThirdParty(ipAddress, userAgent string) (result model.IPQSRow, err error) {
-	if ipAddress == "" {
-		err = fmt.Errorf("iP address IS EMPTY")
-		return
-	}
-	result.Timestamp = time.Now()
-	result.Uag = userAgent
-	heandler := model.Handle{
-		Time:        result.Timestamp,
-		Send:        !g.cfg.Mock,
-		RedirectUrl: fmt.Sprintf("%s%s/%s", g.cfg.UrlPostback, g.Sender.IpqsKey, ipAddress),
-		Params:      fmt.Sprintf("allow_public_access_points=true&fast=false&lighter_penalties=true&mobile=false&strictness=1&user_agent=%s", strings.ReplaceAll(userAgent, " ", "%20")),
-		Method:      "GET",
-	}
-	dat, err := json.Marshal(heandler)
-
-	respRpc, err := RpcRequest(g.cfg.Service, string(dat), g.Sender.HostRepiter, g.Loger)
-	if respRpc != nil {
-		result.RespStatus = respRpc.RespStatus
-		result.RespCode = respRpc.RespCode
-		result.RespBody = respRpc.RespBody
+	if cfg.ModeStart.Updater {
+		// gen.ReaDatabase()
+		gen.UpdateDatabase()
+		loger <- [4]string{"StartMonitor", "startMode.Updater[TableIpAddress]", "IS OK", "INFO"}
+		tp.ExitWithSecTimeout(0)
 	}
 
-	return
-}
-func (g *GenFilter) calc() {
-	g.currentTimestamp = time.Now().Add(- time.Duration(g.cfg.ChDb.Timezone) * time.Hour)
-	g.minusIntervalTimestamp = g.currentTimestamp.Add(- (g.Interval - 1*time.Second))
-	g.filter = model.LogFilter{
-		TimestampFrom: g.minusIntervalTimestamp,
-		TimestampTo:   g.currentTimestamp,
-		Source:        model.Source("redirect"),
-	}
-	g.ticker = time.Tick(g.Interval)
-}
-func isUpdateTariff(text string) bool {
-	indexWarning := strings.Index(text, "\"success\":true") // много ворнингов в сентри по, уберем их оттуда
-	if indexWarning == -1 {
-		return true // если данное вхождение текста (i/o timeout) не найдено, значит это не таймаут а ошибка
-	}
-	return false
-}
-func (g *GenFilter) circle() {
-	rows, err := g.chRepo.Get(&g.filter)
-	if err != nil {
-		g.Loger <- [4]string{"GenFilter.Select", fmt.Sprintf("get[%v|%v]", g.filter.TimestampFrom, g.filter.TimestampTo), fmt.Sprintf("%v", err), "ERROR"}
-		time.Sleep(5 * time.Second)
-		g.circle()
-	}
-	var i int
-	if len(rows) > 0 {
-		g.Loger <- [4]string{"GenFilter.Select", "rows", fmt.Sprintf("extract: %d", len(rows)), "INFO"}
-		for iRow, v := range rows {
-			// проверить есть ли в кеше
-			ipKey := v.Ip.String()
-			rowIpqs := g.db.TableIpAddress.Get(ipKey)
-			if rowIpqs != nil {
-				rowIpqs.RefererId = rowIpqs.Id
-				g.reporting.SetCashDetect(ipKey)
-			} else {
-				i++
-				if i > g.limit {
-					g.Loger <- [4]string{"circle.replaceSender", fmt.Sprintf("CallThirdParty[sender:%s]", g.Sender.HostRepiter), fmt.Sprintf("достигли лимита:%v", g.limit), "INFO"}
-					g.replaceSender()
-				}
-				result, err := g.CallThirdParty(v.Ip.String(), v.UserAgent.String)
-				if err != nil {
-					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_POST]", fmt.Sprintf("ошибка REST [ip:%s][err:%v|resu:%v]", ipKey, err, result), "ERROR"}
-					// если это внутренние ошибки, на будем их регистрировать по правилам конфигурации
-					continue
-				}
-				g.reporting.SenderHost = g.Sender.HostRepiter
-				if isUpdateTariff(result.RespBody) {
-					ertx := fmt.Sprintf("postbackService resp. Error [tip:QUOTA][host:%s][sender:%s][ip:%s]【%s】舞", g.cfg.UrlPostback, g.reporting.SenderHost, ipKey, result.RespBody)
-					if g.cfg.Mock {
-						ertx = fmt.Sprintf("запрос не был отправлен [tip:MOCK][resp: %v]", result)
-					}
-					g.Loger <- [4]string{"circle", "CallThirdParty[ERR_QUOTA]", ertx, "WARNING"}
-					g.reporting.SetErr(ipKey, fmt.Errorf("%s", ertx))
-					g.ErrReq <- struct{}{}
-					continue
-				}
-				g.globalErr = 0
-				g.db.TableIpAddress.SetNew(ipKey, &result)
-				g.reporting.SetOk(ipKey, result.RespBody)
-				g.Loger <- [4]string{"circle", fmt.Sprintf("CallThirdParty[SetOk][%d]", iRow+1), fmt.Sprintf("[ip:%s][uag:%s]", ipKey, v.UserAgent.String)}
-			}
-			time.Sleep(100 * time.Millisecond)
-			continue
-		}
-		//g.db.TableIPQS.SaveBath(ipqsRows)
-	} else {
-		g.Loger <- [4]string{"GenFilter.Select", "rows", "нет строчек для обработки"}
-	}
+	if cfg.ModeStart.ClickMonitorAsync {
+		// функция которая определин соттветствует ли ответ ожидаемому
+		// хаб для воркеров
+		sendersHub := reqestWrkHub.NewHub(cfg, Validater, loger)
+		toRequest := sendersHub.Input // канал для отправки воркеру (который возьмется)
+		// каналы отчетов, на основе err реквеста и validater() == true
+		respOkCh := sendersHub.LogIpqs
+		respErCh := sendersHub.LogBad
 
-	<-g.ticker
-	g.calc()
-	g.circle()
+		// инициализируем фоновый таймер, который сделает нам еще и даты для фильтра в sql
+		bTimer := timeBetweenGen.NewBetweenTimer(cfg.ChDb.Timezone, cfg.Interval, loger)
+		// канал для приема уведомления о начале нового sql запроса с заданной between
+		tickSql := bTimer.Ticket
+		// инициализируем воркера который будет собирать сам запрос и обрабатывать выдачу с базы
+		go gen.DaemonSqlMaker(tickSql, toRequest)
+		go gen.RequestDaemonWriter(respOkCh, respErCh)
+		bTimer.StartDaemonTicker()
+		return gen
+	}
+	log.Fatal("не выбран ни один режим работы")
+	return nil
 }

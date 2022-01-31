@@ -39,6 +39,17 @@ type Handle struct {
 	RedirectUrl, Params, Method, Body, Type string
 }
 
+type IpqsPrepareData struct {
+	Ip string
+	UserAgent string
+}
+
+type FraudLog struct {
+	Timestamp time.Time
+	RequestUrl string
+	ResponseBody string
+}
+
 type RedirectionLog struct {
 	Timestamp         string
 	ID                string
